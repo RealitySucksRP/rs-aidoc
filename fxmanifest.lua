@@ -4,7 +4,7 @@ game 'gta5'
 name 'rs-aidoc'
 author 'RealitySucksRP'
 description 'RS AI Doc - Dr. Graves autonomous infected trauma responder'
-version '0.1.13'
+version '0.1.14'
 
 lua54 'yes'
 

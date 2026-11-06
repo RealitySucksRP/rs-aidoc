@@ -17,6 +17,7 @@ local function started(name)
 end
 
 local frameworkCache
+local qbCache, esxCache
 local function nativeFramework()
     -- Respect explicit framework selection, but never report a missing provider.
     local preference = tostring(Config.Framework or 'auto'):lower()
@@ -28,7 +29,14 @@ local function nativeFramework()
         if selected == 'esx' then return started('es_extended') and 'esx' or 'standalone' end
         if selected == 'standalone' then return 'standalone' end
     end
-    if frameworkCache and frameworkCache ~= 'standalone' then return frameworkCache end
+    -- A core can restart without restarting this resource. Re-detect instead
+    -- of using a cached adapter whose provider is no longer running.
+    if frameworkCache and frameworkCache ~= 'standalone' then
+        local resources = { qbox = 'qbx_core', qbcore = 'qb-core', esx = 'es_extended' }
+        if started(resources[frameworkCache]) then return frameworkCache end
+        frameworkCache = nil
+        qbCache, esxCache = nil, nil
+    end
     -- qbx_core FIRST: it declares provide 'qb-core', so exports['qb-core']
     -- resolves on Qbox and testing qb-core first misidentifies the framework.
     if started('qbx_core') then frameworkCache = 'qbox'
@@ -38,7 +46,18 @@ local function nativeFramework()
     return frameworkCache
 end
 
-local qbCache, esxCache
+-- Framework restarts invalidate cached Lua core objects even if a new core
+-- starts before the next player request checks the provider's state.
+AddEventHandler('onResourceStop', function(name)
+    if name == 'qbx_core' or name == 'qb-core' or name == 'es_extended' then
+        frameworkCache, qbCache, esxCache = nil, nil, nil
+    end
+end)
+AddEventHandler('onResourceStart', function(name)
+    if name == 'qbx_core' or name == 'qb-core' or name == 'es_extended' then
+        frameworkCache, qbCache, esxCache = nil, nil, nil
+    end
+end)
 
 local function qbCore()
     if qbCache then return qbCache end

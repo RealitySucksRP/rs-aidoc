@@ -1,4 +1,6 @@
-# RS AI Doc v0.1.12 - Compatibility and Live Acceptance
+# RS AI Doc v0.1.14 - Compatibility and Live Acceptance
+
+The v0.1.14 public-release pass added framework restart cache invalidation, ESX character-load payment reconciliation, and a clear standalone pricing warning. The medical sequence, OGG library, charge logic and entity authorization are unchanged. See `CFX_RELEASE_CHECKLIST.md` for the current acceptance gate.
 
 ## Package and current flow
 
@@ -82,8 +84,9 @@ an already-finished bar does not cancel a later unrelated operation.
 
 1. Back up resource files and KVP storage. Stop `rs-aidoc` when no rescue is active.
 2. Replace the resource using the full `rs-aidoc` folder in this ZIP, preserving any custom local settings with a careful merge. Start the core and matching medical resource first.
-3. Leave Config.UseExternalBridge=false. Enable OneSync; start progressbar first
-   when installed. Run `refresh`, then `restart rs-aidoc` (or `ensure` if stopped).
+3. Keep the default internal integrations enabled. Enable OneSync; start progressbar first
+   when installed. Set `Config.Price = 0` if using standalone without an economy provider.
+   Run `refresh`, then `restart rs-aidoc` (or `ensure` if stopped).
 4. Use `/aidocdiag` in the **client F8 console** during a rescue to check the animation and GPS stages; the **server console** also has a separate `aidocdiag` diagnostic. Check startup errors and pending entries
    with `aidocsettlements`; enable Config.Debug temporarily for acceptance.
 5. On two real clients, test a conscious injured player (e.g., HP 150/200), Qbox bleeding at full HP, laststand and full death **separately**: `/medic` -> ambulance drives to a nearby road -> Graves approaches -> `amb@medic@standing@tendtodead@base/base` -> `mini@cpr@char_a@cpr_str/cpr_pumpchest` (with configured alternatives) -> heal or revive -> one $500 charge -> correct medical state -> Graves stands, runs back, boards and drives away -> safe entity cleanup. Confirm the CPR animation runs continuously throughout the progressbar, including after interrupted scripts or an animation reset.

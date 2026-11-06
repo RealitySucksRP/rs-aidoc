@@ -500,10 +500,21 @@ local function playerUnloaded(playerId)
 end
 AddEventHandler('QBCore:Server:OnPlayerUnload', playerUnloaded)
 AddEventHandler('esx:playerLogout', playerUnloaded)
-AddEventHandler('QBCore:Server:OnPlayerLoaded', function()
-    local src = source
-    SetTimeout(500, function() RSAIDocSettlements.Reconcile(src) end)
-end)
+-- Framework player-loaded events can be server-local (source=0) and carry
+-- either an ID or a player object. Resolve the *real* source before touching
+-- a character's settlement journal; never credit a recycled player source.
+local function reconcileLoadedPlayer(player)
+    local src = type(player) == 'table'
+        and tonumber(player.PlayerData and player.PlayerData.source or player.source)
+        or tonumber(player)
+    if not src or src < 1 then src = tonumber(source) end
+    if not src or src < 1 or not GetPlayerName(src) then return end
+    SetTimeout(500, function()
+        if GetPlayerName(src) then RSAIDocSettlements.Reconcile(src) end
+    end)
+end
+AddEventHandler('QBCore:Server:OnPlayerLoaded', reconcileLoadedPlayer)
+AddEventHandler('esx:playerLoaded', reconcileLoadedPlayer)
 
 -- Sessions are only closed by the client reporting completion or cancellation.
 -- A player who respawns on their own, crashes, or simply walks away would
@@ -544,9 +555,12 @@ AddEventHandler('onResourceStart', function(resource)
             Wait(500)
             framework = RSAIDocBridge.Framework()
         end
-        print(('[rs-aidoc] Dr. Graves ready | framework=%s | external_bridge=%s'):format(
-            framework, GetResourceState('rs_bridge')
+        print(('[rs-aidoc] Dr. Graves ready | framework=%s | treatment_price=%s'):format(
+            framework, tostring(Config.Price)
         ))
+        if framework == 'standalone' and (tonumber(Config.Price) or 0) > 0 then
+            print('[rs-aidoc] CONFIG WARNING: standalone has no economy provider. Set Config.Price = 0 for free in-game treatment, or start/configure a supported framework.')
+        end
         for _, playerId in ipairs(GetPlayers()) do RSAIDocSettlements.Reconcile(tonumber(playerId)) end
     end)
 end)
@@ -568,9 +582,9 @@ RegisterCommand('aidocdiag', function(src)
         total = total + 1
         if session.charged then paidCount = paidCount + 1 end
     end
-    local line = ('[rs-aidoc] diag framework=%s ems=%d active=%d charged=%d price=%s externalBridge=%s')
+    local line = ('[rs-aidoc] diag framework=%s ems=%d active=%d charged=%d price=%s')
         :format(tostring(RSAIDocBridge.Framework()), countEMS(), total, paidCount,
-            tostring(Config.Price), tostring(Config.UseExternalBridge == true))
+            tostring(Config.Price))
     print(line)
     for patient, session in pairs(sessions) do
         local responderOK, gate, dist, owner = RSAIDocResponders.Check(patient, session, false)
