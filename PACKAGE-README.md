@@ -165,8 +165,7 @@ CPR playback, revival and departure.
 
 ## v0.1.11 — restore proven kneel and CPR flow (10-14-2026)
 
-Compared the supplied working `rs-aidoc-oldone.zip` against `rs-aidoc(5).zip`.
-The Codex package inserted strict bone-index, nearby-navmesh, hand-geometry and
+An earlier build added strict bone-index, nearby-navmesh, hand-geometry and
 animation-watchdog checks **before** or **during** CPR. These can abort the scene
 on ragdolled patients, custom interiors or model rigs even if Dr. Graves is next
 to the patient. The exact runtime cause still requires an F8 log from FiveM.
@@ -191,7 +190,7 @@ late animation confirmation. If both clips fail to load altogether, the scene
 still records an animation failure and stops safely.
 The one-charge server-authoritative treatment, medical-provider confirmation,
 AIDOC ambulance, routing recovery, dialogue/lip animation, and departure flow
-remain the same as the supplied Codex package.
+remain the same as the previous release.
 
 **QA:** all 13 Lua chunks compile and NUI JS passes `node --check`.
 Mocked scene tests cover treatment alignment without strict navmesh checks,

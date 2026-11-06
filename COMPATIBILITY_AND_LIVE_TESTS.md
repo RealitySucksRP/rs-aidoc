@@ -1,10 +1,10 @@
 # RS AI Doc v0.1.14 - Compatibility and Live Acceptance
 
-The v0.1.14 public-release pass added framework restart cache invalidation, ESX character-load payment reconciliation, and a clear standalone pricing warning. The medical sequence, OGG library, charge logic and entity authorization are unchanged. See `CFX_RELEASE_CHECKLIST.md` for the current acceptance gate.
+The v0.1.14 public-release pass added framework restart cache invalidation, ESX character-load payment reconciliation, and a clear standalone pricing warning. The medical sequence, OGG library, charge logic and entity authorization are unchanged. See Install and Live Gate below for verification steps.
 
 ## Package and current flow
 
-This ZIP is the complete rs-aidoc resource derived from the supplied Codex-modified ZIP, with the proven animation choreography restored from the separately supplied older working ZIP. Conscious treatment, mouth movement, AIDOC plate, road navigation, payment journal and medical verification remain included. Back up the resource and the server KVP journal before replacing it.
+This package includes the complete RS AI Doc resource. Conscious treatment, mouth movement, AIDOC plate, road navigation, payment journal and medical verification remain included. Back up the resource and the server KVP journal before replacing it.
 
 `/medic` -> server validates injured/down state, EMS availability and funds -> server-created doctor and AIDOC ambulance -> client drives/approaches -> server checks exact responder IDs, model, bucket and nearby doctor position, with a bounded ambulance/patient corroboration path for stale server doctor coordinates (not transient owner) -> fee billed once -> diagnosis -> kneeling examination and timed CPR animation for both patient modes -> server rechecks current medical state -> Qbox Heal or provider Revive/native heal -> server checks medical result -> departure/cleanup.
 
@@ -101,7 +101,7 @@ an already-finished bar does not cancel a later unrelated operation.
 
 ## Verification Boundary
 
-All 13 Lua chunks passed static syntax compilation using LuaTeX loadfile and NUI JavaScript passed node --check. Two additional isolated mocked animation start/fallback cases passed, with a static check of the non-blocking alignment flow. Older Codex mock counts have not been rerun for this patch. All supplied OGG clips are retained. The changed config is intentional and requires a careful merge for existing installations.
+All 13 Lua chunks passed static syntax compilation using LuaTeX loadfile and NUI JavaScript passed node --check. Two additional isolated mocked animation start/fallback cases passed, with a static check of the non-blocking alignment flow. All supplied OGG clips are retained. The changed config is intentional and requires a careful merge for existing installations.
 
 No live restart, FiveM/CEF, OneSync two-client, production database or Legacy/
 Enhanced acceptance was performed. Do not treat simulated success as a complete
@@ -109,7 +109,7 @@ release certification, particularly for QBCore, ESX or a custom external bridge.
 
 ## 10-14-2026 — Regression details
 
-The previous Codex build could refuse to start the kneeling clip because a hand-bone index or an exact nearby ped-safe coordinate was missing. It also rejected CPR if the two hand bones were too far from the projected chest. Those checks are no longer treatment gates. The first usable animation clip now takes priority, rather than a perfect positional calibration; the existing animation-monitor thread retries when a task is interrupted. Use `/aidocdiag` and F8 to confirm the actual playing clip during kneel and CPR. An attempted clip without a confirmed native playback state no longer aborts an authorized rescue; a warning and retry is used. These are static/mock-verified repairs and remain unverified in a FiveM session.
+An earlier build could refuse to start the kneeling clip because a hand-bone index or an exact nearby ped-safe coordinate was missing. It also rejected CPR if the two hand bones were too far from the projected chest. Those checks are no longer treatment gates. The first usable animation clip now takes priority, rather than a perfect positional calibration; the existing animation-monitor thread retries when a task is interrupted. Use `/aidocdiag` and F8 to confirm the actual playing clip during kneel and CPR. An attempted clip without a confirmed native playback state no longer aborts an authorized rescue; a warning and retry is used. These are static/mock-verified repairs and remain unverified in a FiveM session.
 
 ## 10-14-2026 — v0.1.13 facial-only regression check
 

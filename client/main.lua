@@ -349,7 +349,7 @@ local function playDoctorAnim(token, primaryDict, primaryClip, fallbackDict, fal
     context.animEpoch = (context.animEpoch or 0) + 1
     local epoch = context.animEpoch
     -- Request control opportunistically but do not require it before attempting
-    -- TaskPlayAnim. That was one of the Codex-only rejection conditions.
+    -- TaskPlayAnim. The expected bone index is optional here.
     local control = RSBridge.RequestEntityControl(doc, 450)
     if not rescueActive(token) or active ~= context then return false end
     if Config.Debug and not control then
